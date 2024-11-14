@@ -1,0 +1,107 @@
+name: CI/CD Pipeline
+
+# Workflow wird bei jedem Push auf den main-Branch ausgelöst
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # Schritt 1: Linting
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Repository klonen
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      # Node.js installieren
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # Abhängigkeiten installieren
+      - name: Install dependencies
+        run: npm install
+
+      # Echo-Befehl für Linting als Test (Vorbereitung)
+      - name: Echo Linting
+        run: echo "Running Linting..."
+
+      # Linting ausführen
+      - name: Run Lint
+        run: npm run lint
+        continue-on-error: false # Pipeline schlägt bei Linting-Fehlern fehl
+
+  # Schritt 2: Tests
+  test:
+    runs-on: ubuntu-latest
+    needs: lint # Dieser Job wird nur ausgeführt, wenn Linting erfolgreich war
+    steps:
+      # Repository klonen
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      # Node.js installieren
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # Abhängigkeiten installieren
+      - name: Install dependencies
+        run: npm install
+
+      # Echo-Befehl für Tests als Test (Vorbereitung)
+      - name: Echo Testing
+        run: echo "Running Tests..."
+
+      # Tests ausführen
+      - name: Run Tests
+        run: npm test -- --watchAll=false
+        continue-on-error: false # Pipeline schlägt bei Testfehlern fehl
+
+  # Schritt 3: Build
+  build:
+    runs-on: ubuntu-latest
+    needs: test # Dieser Job wird nur ausgeführt, wenn die Tests erfolgreich waren
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the application
+        run: npm run build
+
+  # Schritt 4: Deployment
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # Dieser Job wird nur ausgeführt, wenn der Build erfolgreich war
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the application
+        run: npm run build
+
+      # Deployment auf GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build # Ordner, der nach dem Build-Prozess erzeugt wurde

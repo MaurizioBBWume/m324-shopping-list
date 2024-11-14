@@ -1,0 +1,11 @@
+# Reflexion Burri & Widler (Aura)
+ 
+## Reflexion zur Pipeline-Umsetzung
+ 
+Beim Einrichten der CI/CD-Pipeline für unsere React-Anwendung sind einige Herausforderungen aufgetreten. Unser Ziel war es, den Code automatisch auf Fehler und Stil zu überprüfen, Tests auszuführen und das Deployment vorzubereiten. Dabei hatten wir mehrere Probleme mit Versionen und Abhängigkeiten.
+ 
+Ein zentrales Problem war, dass unsere Anwendung mit React 19 arbeitete, während viele Tools wie `@testing-library/react` nur React 18 unterstützten. Das führte zu Konflikten und Fehlschlägen bei der Installation, sodass wir React auf Version 18 heruntersetzen mussten, um eine stabile Grundlage zu schaffen.
+ 
+Ein weiteres Problem trat bei der Konfiguration von Babel und Jest auf. Babel und Jest konnten CSS-Module und andere moderne Features nicht sofort verarbeiten. Durch Anpassungen an den Konfigurationsdateien und das Hinzufügen von Mocks konnten wir diese Probleme lösen.
+ 
+In Zukunft wäre es sinnvoll, immer stabilere und weit verbreitete Versionen zu verwenden, um Konflikte zu vermeiden. Zudem könnte eine regelmäßige Überprüfung der Abhängigkeiten helfen, Fehler frühzeitig zu erkennen und die Pipeline stabil zu halten.
